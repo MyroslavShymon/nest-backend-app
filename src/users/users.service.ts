@@ -16,7 +16,11 @@ export class UsersService {
     const user = await this.userRepository.create(dto);
     const role = await this.roleService.getRoleByValue("User");
     await user.$set("roles", [role.id]);
+    // console.log("Before user.roles", role);
+
     user.roles = [role];
+    console.log("Before user.roles", user.roles);
+
     return user;
   }
 
@@ -37,9 +41,9 @@ export class UsersService {
     const user = await this.userRepository.findByPk(dto.userId);
     const role = await this.roleService.getRoleByValue(dto.value);
     if (role && user) {
-      // console.log("user before", user);
-      await user.$add("roles", role.id); //
-      // console.log("user after", user);
+      // console.log("user before", user.roles);
+      await user.$add("roles", role.id);
+      // console.log("user after", user.roles);
 
       return dto;
     }

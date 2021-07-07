@@ -32,9 +32,9 @@ export class UsersController {
 
   @ApiOperation({ summary: "Получения всех пользовтилей" })
   @ApiResponse({ status: 200, type: [User] })
-  @UseGuards(JwtAuthGuard)
-  @Roles("Admin")
   @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @Roles("Admin", "Moderator")
   @Get()
   getAll() {
     return this.userService.getAllUsers();

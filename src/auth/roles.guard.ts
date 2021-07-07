@@ -8,21 +8,27 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
-import { Observable } from "rxjs";
+import { Role } from "src/roles/roles.model";
+import { UsersService } from "src/users/users.service";
+import { userJwt } from "./interfaces/user-jwt.interface";
 import { ROLES_KEY } from "./roles-auth.decorator";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private JwtService: JwtService, private reflector: Reflector) {}
+  constructor(
+    private JwtService: JwtService,
+    private reflector: Reflector,
+    private userService: UsersService
+  ) {}
 
-  canActivate(
-    context: ExecutionContext
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const requiredRoles = this.reflector.getAllAndOverride<string[]>(
         ROLES_KEY,
         [context.getHandler(), context.getClass()]
       );
+      console.log("requiredRoles", requiredRoles, !requiredRoles);
+
       if (!requiredRoles) {
         return true;
       }
@@ -36,12 +42,26 @@ export class RolesGuard implements CanActivate {
           message: "Пользователь не авторизован",
         });
       }
+      const user: userJwt = this.JwtService.verify(token);
+      user.roles = await this.getUserCurrentRoles(user);
+      console.log("verified user", user);
 
-      const user = this.JwtService.verify(token);
       req.user = user;
+
       return user.roles.some((role) => requiredRoles.includes(role.value));
     } catch (error) {
       throw new HttpException("Нет доступа", HttpStatus.FORBIDDEN);
     }
+  }
+  private async getUserCurrentRoles(userToCompare: userJwt): Promise<Role[]> {
+    const user = await this.userService.getUserByEmail(userToCompare.email);
+    let userRoles: Role[] = user
+      .getDataValue("roles")
+      .map((role: any): Role => role.toJSON());
+
+    if (userRoles !== userToCompare.roles) {
+      userToCompare.roles = userRoles;
+    }
+    return userToCompare.roles;
   }
 }
