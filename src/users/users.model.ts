@@ -8,7 +8,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Role } from "src/roles/roles.model";
-import { Post } from "src/posts/posts.model";
+import { Task } from "src/tasks/tasks.model";
 import { UserRoles } from "src/roles/user-roles.model";
 
 interface UserCreationAttrs {
@@ -20,7 +20,7 @@ interface UserCreationAttrs {
 export class User extends Model<User, UserCreationAttrs> {
   @ApiProperty({ example: "1", description: "Уникальный идентификатор" })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.INTEGER.UNSIGNED,
     unique: true,
     primaryKey: true,
     autoIncrement: true,
@@ -62,6 +62,6 @@ export class User extends Model<User, UserCreationAttrs> {
   @BelongsToMany(() => Role, () => UserRoles)
   roles: Role[];
 
-  @HasMany(() => Post)
-  posts: Post[];
+  @HasMany(() => Task)
+  tasks: Task[];
 }

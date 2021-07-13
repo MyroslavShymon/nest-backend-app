@@ -7,8 +7,8 @@ import { RolesModule } from "./roles/roles.module";
 import { Role } from "./roles/roles.model";
 import { UserRoles } from "./roles/user-roles.model";
 import { AuthModule } from "./auth/auth.module";
-import { PostsModule } from "./posts/posts.module";
-import { Post } from "./posts/posts.model";
+import { PostsModule } from "./tasks/tasks.module";
+import { Task } from "./tasks/tasks.model";
 import { FilesModule } from "./files/files.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import * as path from "path";
@@ -28,7 +28,7 @@ import * as path from "path";
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRESS_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      models: [User, Role, UserRoles, Post],
+      models: [User, Role, UserRoles, Task],
       autoLoadModels: true,
     }),
     UsersModule,

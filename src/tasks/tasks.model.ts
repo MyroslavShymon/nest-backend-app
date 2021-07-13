@@ -15,8 +15,8 @@ interface PostCreationAttrs {
   image?: string;
 }
 
-@Table({ tableName: "posts" })
-export class Post extends Model<Post, PostCreationAttrs> {
+@Table({ tableName: "tasks" })
+export class Task extends Model<Task, PostCreationAttrs> {
   @Column({
     type: DataType.INTEGER,
     unique: true,

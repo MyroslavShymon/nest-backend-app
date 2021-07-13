@@ -6,7 +6,6 @@ import {
   Put,
   UseGuards,
   UsePipes,
-  ValidationPipe,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
@@ -16,6 +15,7 @@ import { AddRoleDto } from "./dto/add-role.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { User } from "./users.model";
 import { UsersService } from "./users.service";
+import { ValidationPipe } from "../pipes/validation.pipe";
 
 @ApiTags("Пользователи")
 @Controller("users")
